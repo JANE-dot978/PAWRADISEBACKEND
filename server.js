@@ -1,9 +1,11 @@
 const express = require("express");
 const dotenv = require("dotenv");
+dotenv.config();
 const cors = require("cors");
 const connectDB = require("./helpers/initMongo"); // If you're using helpers/initMongo.js
 
-dotenv.config();
+
+
 
 const app = express();
 
