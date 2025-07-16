@@ -5,8 +5,9 @@ const User= require("../models/user.model");
 const generateToken = (user) => {
     return JWT.sign(
         {id: user._id, role: user.role},
-        process.env.JWT_SECRETE,
-        {expireIn: "10m"}
+        process.env.JWT_SECRET,
+        { expiresIn: "10m" }
+
     );
 };
 // @route   POST /api/users/register
@@ -14,13 +15,13 @@ const registerUser = async (req, res) =>{
     try{
         const{ name, email, password, role} = req.body;
 
-        const existingUser = await User.findone({ email});
+        const existingUser = await User.findOne({ email});
         if(existingUser){
             return res.status(400).json({message:"user already exists"});
         }
         const hashedPassword = await bcrypt.hash(password,8);
 
-    const newUser = newUser({
+    const newUser = new User({
         name,
         email,
         password :hashedPassword,
@@ -48,7 +49,7 @@ const loginUser =async(req, res) =>{
         const{email, password}= req.body;
 
         // Find user
-        const user = await user.findOne({email});
+        const user = await User.findOne({email});
         if (!user) return res.status(400).json({message:"invalid credentials"});
 
         //compare password
