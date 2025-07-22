@@ -35,8 +35,14 @@ const dotenv = require("dotenv");
 dotenv.config();
 const cors = require("cors");
 const connectDB = require("./helpers/initMongo");
+const errorHandler = require('./middleware/error.middleware');
+
+
 
 const app = express();
+
+app.use(errorHandler);
+
 
 // Connect to MongoDB
 connectDB();
