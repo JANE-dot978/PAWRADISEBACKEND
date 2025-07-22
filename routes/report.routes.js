@@ -1,10 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const reportController = require('../controllers/report.controller');
-const protect = require('../middlewares/auth.middleware');
-const restrictTo = require('../middlewares/role.middleware');
+const { protect } = require('../middleware/auth.middleware');
+const restrictTo = require('../middleware/role.middleware');
 
-// ✅ Only Admin & Employee can access this route
+// ✅ Only Admin & Employee can access
 router.get(
   '/',
   protect,
@@ -13,4 +13,5 @@ router.get(
 );
 
 module.exports = router;
+
 
