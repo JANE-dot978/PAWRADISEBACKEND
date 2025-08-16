@@ -39,6 +39,7 @@ const errorHandler = require('./middleware/error.middleware');
 
 
 
+
 const app = express();
 
 app.use(errorHandler);
@@ -70,6 +71,11 @@ app.use('/api/bookings', require('./routes/booking.routes'));
 
 //reports routes
 app.use('/api/reports', require('./routes/report.routes'));
+
+// // Routes
+// app.use('/api/contact', require('./routes/contact.routes'));
+app.use("/api/contact", require("./routes/contact.routes"));
+
 
 
 
