@@ -1,18 +1,32 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const { registerUser } = require('../controllers/auth.controller');
-const { registerSchema } = require('../validation/validation.schema');
+const { registerUser, loginUser } = require("../controllers/auth.controller");
+const { registerSchema } = require("../helpers/validationSchemas");
 
-// Register Route
-router.post('/register', async (req, res, next) => {
+// Register
+router.post("/register", async (req, res, next) => {
   try {
-    // Validate input
     await registerSchema.validateAsync(req.body);
-    // If validation passes, move to controller
     registerUser(req, res, next);
   } catch (err) {
-    next(err); // Forward to error middleware
+    next(err);
   }
 });
 
+// Login
+router.post("/login", loginUser);
+
 module.exports = router;
+
+// const express = require("express");
+// const router = express.Router();
+// const { registerUser, loginUser } = require("../controllers/auth.controller");
+
+// // Register
+// router.post("/register", registerUser);
+
+// // Login
+// router.post("/login", loginUser);
+
+// module.exports = router;
+
