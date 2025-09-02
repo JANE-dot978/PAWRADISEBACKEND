@@ -17,9 +17,9 @@ const createBooking = async (req, res) => {
     // Create a new booking
     const booking = new Booking({
       event: eventId,
-      user: req.user._id, // fixed: should be from req, not res
-      date: new Date(),
-      status: 'pending'
+      user: req.user._id, // comes from protect middleware
+      bookedAt: new Date(), // correct field
+      paymentStatus: 'pending' // correct field
     });
 
     await booking.save();
@@ -68,7 +68,7 @@ const cancelBooking = async (req, res) => {
       return res.status(403).json({ message: 'Not authorized to cancel this booking' });
     }
 
-    booking.status = 'cancelled';
+    booking.paymentStatus = 'cancelled'; // fixed field
     await booking.save();
     res.status(200).json({ message: 'Booking cancelled' });
   } catch (error) {
@@ -76,7 +76,6 @@ const cancelBooking = async (req, res) => {
   }
 };
 
-// Exporting all controller functions
 module.exports = {
   createBooking,
   getMyBookings,

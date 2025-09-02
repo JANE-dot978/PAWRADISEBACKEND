@@ -30,71 +30,55 @@
 //   console.log(`🚀 Server running on port ${PORT}`);
 // });
 
+// server.js
+// 
+// server.js
 const express = require("express");
+const mongoose = require("mongoose");
 const dotenv = require("dotenv");
-dotenv.config();
 const cors = require("cors");
-const connectDB = require("./helpers/initMongo");
-const errorHandler = require('./middleware/error.middleware');
 
-// Import Routes
-const authRoutes = require("./routes/auth.routes");
+// Load environment variables
+dotenv.config();
+
+// Import routes
 const userRoutes = require("./routes/user.routes");
+const authRoutes = require("./routes/auth.routes");
+const eventRoutes = require("./routes/event.routes"); // Uncomment when ready
+// const bookingRoutes = require("./routes/booking.routes"); // Uncomment when ready
 
-
-
+// Initialize app
 const app = express();
-app.use(express.json());
-
-app.use(errorHandler);
-
-
-// Connect to MongoDB
-connectDB();
 
 // Middleware
-app.use(cors());
 app.use(express.json());
+app.use(cors());
 
-// Test route
+// API Routes
+app.use("/api/users", userRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/events", eventRoutes);   // future event routes
+// app.use("/api/bookings", bookingRoutes); // future booking routes
+
+// Root endpoint
 app.get("/", (req, res) => {
-  res.send("🐾 Welcome to Pawradise API");
+  res.status(200).json({ message: "Welcome to Pawradise Backend API 🚀" });
 });
 
-// ✅ User auth routes (already includes login/register)
-// app.use("/api/users", require("./routes/user.routes"));
-
-// ✅ Event routes
-app.use("/api/events", require("./routes/event.routes"));
-
-// ✅ Remove or comment this out if file does not exist
-//  app.use("/api/auth", require("./routes/auth.routes"));
-// // ✅ User auth routes
-//  app.use("/api/users", require("./routes/user.routes"));
-app.use('/api/bookings', require('./routes/booking.routes'));
-
-//reports routes
-app.use('/api/reports', require('./routes/report.routes'));
-
-// // Routes
-// app.use('/api/contact', require('./routes/contact.routes'));
-app.use("/api/contact", require("./routes/contact.routes"));
-
-// Use Routes
-app.use("/api/auth", authRoutes);   // e.g. /api/auth/register, /api/auth/login
-app.use("/api/users", userRoutes); // e.g. /api/users, /api/users/:id
-
-
-// Error handler (MUST be at the bottom)
-app.use((err, req, res, next) => {
-  console.error("🔥 ERROR:", err.message); // log to backend console
-  res.status(500).json({ error: err.message });
-});
-
-
-
-
+// Database connection & server start
 const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-});
+mongoose
+  .connect(process.env.MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => {
+    console.log("✅ MongoDB connected successfully");
+    app.listen(PORT, () =>
+      console.log(`🚀 Server running on http://localhost:${PORT}`)
+    );
+  })
+  .catch((err) => {
+    console.error("❌ Database connection failed:", err.message);
+    process.exit(1); // Exit process if DB connection fails
+  });

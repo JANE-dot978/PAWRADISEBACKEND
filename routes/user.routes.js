@@ -1,24 +1,33 @@
-const express= require("express");
-const router = express.Router();
-const{
-    registerUser,
-    loginUser
-}=require("../controllers/user.controller");
-
- router.post("/register", registerUser);
-
- router.post("/login", loginUser);
-
- module.exports = router;
 // const express = require("express");
 // const router = express.Router();
-// const { getUsers, getUserById, updateUser, deleteUser } = require("../controllers/user.controller");
+// const { getAllUsers, getUserById, updateUser, deleteUser } = require("../controllers/user.controller");
+// const { protect } = require("../middleware/auth.middleware");
+// const { authorize } = require("../middleware/role.middleware"); // this works now
 
-// // Example user routes
-// router.get("/", getUsers);          // GET all users
-// router.get("/:id", getUserById);    // GET single user by ID
-// router.put("/:id", updateUser);     // UPDATE user
-// router.delete("/:id", deleteUser);  // DELETE user
+// // Admin-only user management
+// router.get("/", protect, authorize("admin"), getAllUsers);
+// router.get("/:id", protect, authorize("admin"), getUserById);
+// router.put("/:id", protect, authorize("admin"), updateUser);
+// router.delete("/:id", protect, authorize("admin"), deleteUser);
 
 // module.exports = router;
+const express = require("express");
+const router = express.Router();
+const roleMiddleware = require("../middleware/role.middleware");
+
+// Example protected routes
+router.get("/admin-dashboard", roleMiddleware("admin"), (req, res) => {
+  res.json({ message: "Welcome Admin Dashboard" });
+});
+
+router.get("/employee-dashboard", roleMiddleware("employee"), (req, res) => {
+  res.json({ message: "Welcome Employee Dashboard" });
+});
+
+router.get("/user-dashboard", roleMiddleware("user"), (req, res) => {
+  res.json({ message: "Welcome User Dashboard" });
+});
+
+module.exports = router;
+
 
